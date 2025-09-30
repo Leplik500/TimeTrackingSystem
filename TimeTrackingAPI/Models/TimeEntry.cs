@@ -6,7 +6,7 @@ namespace TimeTrackingAPI.Models
     /// <summary>
     /// Модель проводки рабочего времени
     /// </summary>
-    public class TimeEntry
+    public sealed class TimeEntry
     {
         /// <summary>
         /// Уникальный идентификатор проводки
@@ -45,6 +45,6 @@ namespace TimeTrackingAPI.Models
         /// Навигационное свойство к задаче
         /// </summary>
         [ForeignKey(nameof(TaskId))]
-        public virtual required WorkTask Task { get; set; }
+        public required WorkTask Task { get; set; }
     }
 }

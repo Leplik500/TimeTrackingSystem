@@ -6,7 +6,7 @@ namespace TimeTrackingAPI.Models
     /// <summary>
     /// Модель рабочей задачи
     /// </summary>
-    public class WorkTask
+    public sealed class WorkTask
     {
         /// <summary>
         /// Уникальный идентификатор задачи
@@ -35,11 +35,11 @@ namespace TimeTrackingAPI.Models
         /// Навигационное свойство к проекту
         /// </summary>
         [ForeignKey(nameof(ProjectId))]
-        public virtual required Project Project { get; set; }
+        public required Project Project { get; set; }
 
         /// <summary>
         /// Коллекция проводок времени для данной задачи
         /// </summary>
-        public virtual ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
+        public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
     }
 }

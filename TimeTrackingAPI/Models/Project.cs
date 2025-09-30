@@ -5,7 +5,7 @@ namespace TimeTrackingAPI.Models
     /// <summary>
     /// Модель проекта компании
     /// </summary>
-    public class Project
+    public sealed class Project
     {
         /// <summary>
         /// Уникальный идентификатор проекта
@@ -34,6 +34,6 @@ namespace TimeTrackingAPI.Models
         /// <summary>
         /// Коллекция задач, относящихся к данному проекту
         /// </summary>
-        public virtual ICollection<WorkTask> Tasks { get; set; } = new List<WorkTask>();
+        public ICollection<WorkTask> Tasks { get; set; } = new List<WorkTask>();
     }
 }
