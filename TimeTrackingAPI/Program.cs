@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using TimeTrackingAPI.Data;
+using TimeTrackingAPI.Services;
+using TimeTrackingAPI.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
+// Регистрация сервисов
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -19,8 +25,31 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Time Tracking API",
         Version = "v1",
-        Description = "API для системы учета рабочего времени"
+        Description = "API для системы учета рабочего времени",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Разработчик API",
+            Email = "developer@timetracking.com"
+        }
     });
+    
+    // Добавляем XML комментарии для Swagger
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    
+    // Проверяем существование файла XML документации
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+        Console.WriteLine($"XML документация загружена из: {xmlPath}");
+    }
+    else
+    {
+        Console.WriteLine($"Файл XML документации не найден: {xmlPath}");
+    }
+    
+    // Настройка отображения enum как строки
+    options.UseInlineDefinitionsForEnums();
 });
 
 var app = builder.Build();
@@ -54,13 +83,15 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Swagger доступен всегда
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Time Tracking API v1");
     options.RoutePrefix = string.Empty;
+    options.DisplayRequestDuration();
+    options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
 });
-
 
 app.UseRouting();
 app.UseAuthorization();
