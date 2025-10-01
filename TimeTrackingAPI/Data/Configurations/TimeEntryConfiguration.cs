@@ -5,9 +5,11 @@ using TimeTrackingAPI.Models;
 namespace TimeTrackingAPI.Data.Configurations;
 
 /// <summary>
-/// Конфигурация сущности TimeEntry
+///     Конфигурация сущности TimeEntry
 /// </summary>
-public class TimeEntryConfiguration : IEntityTypeConfiguration<TimeEntry>
+public class
+        TimeEntryConfiguration : IEntityTypeConfiguration<
+        TimeEntry>
 {
     public void Configure(EntityTypeBuilder<TimeEntry> builder)
     {
@@ -44,7 +46,8 @@ public class TimeEntryConfiguration : IEntityTypeConfiguration<TimeEntry>
         builder.HasIndex(timeEntry => timeEntry.Date)
                 .HasDatabaseName("IX_TimeEntries_Date");
 
-        builder.HasIndex(timeEntry => new { timeEntry.Date, timeEntry.TaskId })
+        builder.HasIndex(timeEntry =>
+                        new {timeEntry.Date, timeEntry.TaskId})
                 .HasDatabaseName("IX_TimeEntries_Date_TaskId");
 
         builder.HasIndex(timeEntry => timeEntry.TaskId)

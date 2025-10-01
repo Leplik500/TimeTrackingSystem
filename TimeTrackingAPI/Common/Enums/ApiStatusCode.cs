@@ -1,27 +1,27 @@
 namespace TimeTrackingAPI.Common.Enums;
 
 /// <summary>
-/// Перечисление кодов состояния API
+///     Перечисление кодов состояния API
 /// </summary>
 public enum ApiStatusCode
 {
     /// <summary>
-    /// Успешное выполнение
+    ///     Успешное выполнение
     /// </summary>
     Success = 200,
-        
+
     /// <summary>
-    /// Ресурс не найден
+    ///     Ресурс не найден
     /// </summary>
     NotFound = 404,
-        
+
     /// <summary>
-    /// Внутренняя ошибка сервера
+    ///     Внутренняя ошибка сервера
     /// </summary>
     InternalServerError = 500,
-        
+
     /// <summary>
-    /// Некорректные данные запроса
+    ///     Некорректные данные запроса
     /// </summary>
     BadRequest = 400
 }

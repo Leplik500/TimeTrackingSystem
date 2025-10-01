@@ -3,28 +3,28 @@ using TimeTrackingAPI.Common.Enums;
 namespace TimeTrackingAPI.Common.Models;
 
 /// <summary>
-/// Универсальная модель ответа API
+///     Универсальная модель ответа API
 /// </summary>
 /// <typeparam name="T">Тип возвращаемых данных</typeparam>
 public sealed class ApiResponse<T>
 {
     /// <summary>
-    /// Данные ответа
+    ///     Данные ответа
     /// </summary>
     public T? Data { get; init; }
-        
+
     /// <summary>
-    /// Код состояния
+    ///     Код состояния
     /// </summary>
     public ApiStatusCode StatusCode { get; init; }
-        
+
     /// <summary>
-    /// Сообщение (описание ошибки или успеха)
+    ///     Сообщение (описание ошибки или успеха)
     /// </summary>
     public string Message { get; init; } = string.Empty;
-        
+
     /// <summary>
-    /// Признак успешности операции
+    ///     Признак успешности операции
     /// </summary>
     public bool IsSuccess
     {
@@ -32,9 +32,10 @@ public sealed class ApiResponse<T>
     }
 
     /// <summary>
-    /// Создать успешный ответ
+    ///     Создать успешный ответ
     /// </summary>
-    public static ApiResponse<T> Success(T data, string message = "Операция выполнена успешно")
+    public static ApiResponse<T> Success(T data,
+            string message = "Операция выполнена успешно")
     {
         return new ApiResponse<T>
         {
@@ -43,11 +44,12 @@ public sealed class ApiResponse<T>
             Message = message
         };
     }
-        
+
     /// <summary>
-    /// Создать ответ с ошибкой
+    ///     Создать ответ с ошибкой
     /// </summary>
-    public static ApiResponse<T> Error(ApiStatusCode statusCode, string message)
+    public static ApiResponse<T> Error(ApiStatusCode statusCode,
+            string message)
     {
         return new ApiResponse<T>
         {

@@ -5,9 +5,11 @@ using TimeTrackingAPI.Models;
 namespace TimeTrackingAPI.Data.Configurations;
 
 /// <summary>
-/// Конфигурация сущности WorkTask
+///     Конфигурация сущности WorkTask
 /// </summary>
-public class WorkTaskConfiguration : IEntityTypeConfiguration<WorkTask>
+public class
+        WorkTaskConfiguration : IEntityTypeConfiguration<
+        WorkTask>
 {
     public void Configure(EntityTypeBuilder<WorkTask> builder)
     {
@@ -36,7 +38,8 @@ public class WorkTaskConfiguration : IEntityTypeConfiguration<WorkTask>
                 .HasColumnName("IsActive");
 
         // Индексы
-        builder.HasIndex(workTask => new { workTask.Name, workTask.ProjectId })
+        builder.HasIndex(workTask =>
+                        new {workTask.Name, workTask.ProjectId})
                 .IsUnique()
                 .HasDatabaseName("IX_WorkTasks_Name_ProjectId");
 
