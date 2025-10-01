@@ -105,6 +105,4 @@ app.MapGet("/health", () => new {
     Message = "Time Tracking API is running!" 
 });
 
-app.MapGet("/api", () => Results.Redirect("/swagger"));
-
 app.Run();
