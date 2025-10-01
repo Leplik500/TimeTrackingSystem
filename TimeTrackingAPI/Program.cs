@@ -1,108 +1,167 @@
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using NLog;
+using NLog.Web;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using TimeTrackingAPI.Data;
 using TimeTrackingAPI.Services;
 using TimeTrackingAPI.Services.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = LogManager.Setup()
+        .LoadConfigurationFromAppSettings()
+        .GetCurrentClassLogger();
 
-builder.Services.AddControllers();
-
-// Регистрация DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+try
 {
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlServer(connectionString);
-});
+    logger.Info("Starting Time Tracking API");
 
-// Регистрация сервисов
-builder.Services.AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<ITimeEntryService, TimeEntryService>();
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
+
+    builder.Services.AddControllers();
+
+    // Регистрация DbContext
+    builder.Services
+            .AddDbContext<ApplicationDbContext>(options =>
+            {
+                var connectionString =
+                        builder.Configuration
+                                .GetConnectionString(
+                                        "DefaultConnection");
+
+                options.UseSqlServer(connectionString);
+            });
+
+    // Регистрация сервисов
+    builder.Services
+            .AddScoped<IProjectService, ProjectService>();
+
+    builder.Services.AddScoped<ITaskService, TaskService>();
+    builder.Services
+            .AddScoped<ITimeEntryService, TimeEntryService>();
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
     {
-        Title = "Time Tracking API",
-        Version = "v1",
-        Description = "API для системы учета рабочего времени",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Name = "Разработчик API",
-            Email = "developer@timetracking.com"
-        }
-    });
-    
-    // Добавляем XML комментарии для Swagger
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    
-    // Проверяем существование файла XML документации
-    if (File.Exists(xmlPath))
-    {
-        options.IncludeXmlComments(xmlPath);
-        Console.WriteLine($"XML документация загружена из: {xmlPath}");
-    }
-    else
-    {
-        Console.WriteLine($"Файл XML документации не найден: {xmlPath}");
-    }
-    
-    // Настройка отображения enum как строки
-    options.UseInlineDefinitionsForEnums();
-});
+            Title = "Time Tracking API",
+            Version = "v1",
+            Description =
+                    "API для системы учета рабочего времени",
+            Contact = new OpenApiContact
+            {
+                Name = "Разработчик API",
+                Email = "developer@timetracking.com"
+            }
+        });
 
-var app = builder.Build();
+        // Добавляем XML комментарии для Swagger
+        var xmlFile =
+                $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 
-// Автоматическое применение миграций при запуске
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    
-    try
-    {
-        var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-        var migrations = pendingMigrations as string[] ?? pendingMigrations.ToArray();
-        if (migrations.Length != 0)
+        var xmlPath =
+                Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+        if (File.Exists(xmlPath))
         {
-            logger.LogInformation("Applying {Count} pending migrations: {Migrations}",
-                migrations.Length, string.Join(", ", migrations));
-            await context.Database.MigrateAsync();
-            logger.LogInformation("Database migrations applied successfully");
+            options.IncludeXmlComments(xmlPath);
+            logger.Info(
+                    "XML документация загружена из: {XmlPath}",
+                    xmlPath);
         }
         else
         {
-            logger.LogInformation("No pending migrations found. Database is up to date.");
+            logger.Warn(
+                    "Файл XML документации не найден: {XmlPath}",
+                    xmlPath);
+        }
+
+        options.UseInlineDefinitionsForEnums();
+    });
+
+    var app = builder.Build();
+
+    // Автоматическое применение миграций при запуске
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider
+                .GetRequiredService<ApplicationDbContext>();
+
+        var migrationLogger = scope.ServiceProvider
+                .GetRequiredService<ILogger<Program>>();
+
+        try
+        {
+            var pendingMigrations = await context.Database
+                    .GetPendingMigrationsAsync();
+
+            var migrations = pendingMigrations as string[] ??
+                             pendingMigrations.ToArray();
+
+            if (migrations.Length != 0)
+            {
+                migrationLogger.LogInformation(
+                        "Applying {Count} pending migrations: {Migrations}",
+                        migrations.Length,
+                        string.Join(", ", migrations));
+
+                await context.Database.MigrateAsync();
+                migrationLogger.LogInformation(
+                        "Database migrations applied successfully");
+            }
+            else
+            {
+                migrationLogger.LogInformation(
+                        "No pending migrations found. Database is up to date");
+            }
+        }
+        catch (Exception ex)
+        {
+            migrationLogger.LogError(ex,
+                    "Error occurred while applying database migrations");
+
+            throw;
         }
     }
-    catch (Exception ex)
+
+    // Swagger доступен всегда
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
     {
-        logger.LogError(ex, "Error occurred while applying database migrations");
-        throw;
-    }
+        options.SwaggerEndpoint("/swagger/v1/swagger.json",
+                "Time Tracking API v1");
+
+        options.RoutePrefix = string.Empty;
+        options.DisplayRequestDuration();
+        options.DocExpansion(DocExpansion.List);
+    });
+
+    app.UseRouting();
+    app.UseAuthorization();
+    app.MapControllers();
+
+    app.MapGet("/health", () => new
+    {
+        Status = "Healthy",
+        Timestamp = DateTime.UtcNow,
+        Message = "Time Tracking API is running!"
+    });
+
+    app.MapGet("/api", () => Results.Redirect("/swagger"));
+
+    logger.Info("Time Tracking API configured successfully");
+    await app.RunAsync();
 }
-
-// Swagger доступен всегда
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+catch (Exception ex)
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Time Tracking API v1");
-    options.RoutePrefix = string.Empty;
-    options.DisplayRequestDuration();
-    options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-});
-
-app.UseRouting();
-app.UseAuthorization();
-app.MapControllers();
-
-app.MapGet("/health", () => new { 
-    Status = "Healthy", 
-    Timestamp = DateTime.UtcNow,
-    Message = "Time Tracking API is running!" 
-});
-
-app.Run();
+    logger.Error(ex, "Application terminated unexpectedly");
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}

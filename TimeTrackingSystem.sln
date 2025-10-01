@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTrackingAPITests", "TimeTrackingAPITests\TimeTrackingAPITests.csproj", "{DC1B1D93-CC7C-4096-BB87-F412C924D6C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +19,9 @@ Global
 		{BBC99B18-2C0F-4C67-9905-BF5ABC6C854A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBC99B18-2C0F-4C67-9905-BF5ABC6C854A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBC99B18-2C0F-4C67-9905-BF5ABC6C854A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC1B1D93-CC7C-4096-BB87-F412C924D6C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1B1D93-CC7C-4096-BB87-F412C924D6C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1B1D93-CC7C-4096-BB87-F412C924D6C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1B1D93-CC7C-4096-BB87-F412C924D6C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
