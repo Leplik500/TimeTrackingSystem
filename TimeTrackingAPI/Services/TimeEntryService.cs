@@ -245,15 +245,6 @@ public sealed class TimeEntryService(
         }
     }
 
-    /// <summary>
-    ///     Получить статус дня на основе суммы часов
-    /// </summary>
-    /// <param name="totalHours">Общее количество часов за день</param>
-    /// <returns>
-    ///     Строковый статус: "insufficient" если менее 8 часов,
-    ///     "sufficient" если ровно 8 часов,
-    ///     "excessive" если более 8 часов
-    /// </returns>
     private static string GetDailyStatus(decimal totalHours)
     {
         return totalHours switch

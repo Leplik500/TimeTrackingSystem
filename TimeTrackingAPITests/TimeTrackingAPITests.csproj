@@ -30,4 +30,8 @@
         <ProjectReference Include="..\TimeTrackingAPI\TimeTrackingAPI.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Services\ProjectService\"/>
+    </ItemGroup>
+
 </Project>
