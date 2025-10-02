@@ -23,6 +23,12 @@ public sealed class TimeEntriesController(
     ///     Получить все проводки времени
     /// </summary>
     /// <returns>Список всех проводок времени с включением задачи и проекта</returns>
+    /// <remarks>
+    ///     Возвращает список всех проводок с информацией о связанных задачах и
+    ///     проектах.
+    ///     Результаты отсортированы по дате в порядке убывания (новые проводки
+    ///     первыми).
+    /// </remarks>
     /// <response code="200">Список проводок времени успешно получен</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
     [HttpGet]
@@ -47,6 +53,10 @@ public sealed class TimeEntriesController(
     /// </summary>
     /// <param name="date">Дата в формате YYYY-MM-DD</param>
     /// <returns>Список проводок за указанную дату</returns>
+    /// <remarks>
+    ///     Возвращает все проводки времени, созданные для указанной даты.
+    ///     Компонент времени в параметре date игнорируется, используется только дата.
+    /// </remarks>
     /// <response code="200">Список проводок за дату получен</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
     [HttpGet("date/{date:datetime}")]
@@ -71,9 +81,13 @@ public sealed class TimeEntriesController(
     /// <summary>
     ///     Получить проводки за месяц
     /// </summary>
-    /// <param name="year">Год</param>
-    /// <param name="month">Месяц (1-12)</param>
+    /// <param name="year">Год (допустимый диапазон: 1900-2100)</param>
+    /// <param name="month">Месяц от 1 до 12</param>
     /// <returns>Список проводок за указанный месяц</returns>
+    /// <remarks>
+    ///     Возвращает все проводки времени за указанный месяц и год.
+    ///     Результаты отсортированы по дате в порядке убывания.
+    /// </remarks>
     /// <response code="200">Список проводок за месяц получен</response>
     /// <response code="400">Некорректные параметры года или месяца</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
@@ -113,6 +127,12 @@ public sealed class TimeEntriesController(
     /// </summary>
     /// <param name="timeEntryDto">Данные для создания проводки</param>
     /// <returns>Созданная проводка времени</returns>
+    /// <remarks>
+    ///     Проверяет активность задачи перед созданием проводки.
+    ///     Валидирует сумму часов за день: не более 24 часов суммарно за указанную
+    ///     дату.
+    ///     Автоматически обнуляет компонент времени в дате.
+    /// </remarks>
     /// <response code="201">Проводка времени успешно создана</response>
     /// <response code="400">Некорректные данные запроса или нарушения валидации</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
@@ -179,6 +199,12 @@ public sealed class TimeEntriesController(
     ///     Получить суммарную информацию о часах по дням
     /// </summary>
     /// <returns>Список дневных сводок с суммой часов и статусом</returns>
+    /// <remarks>
+    ///     Возвращает агрегированные данные: сумму часов по каждому дню и статус.
+    ///     Статус: insufficient (менее 8 часов), sufficient (ровно 8 часов), excessive
+    ///     (более 8 часов).
+    ///     Результаты отсортированы по дате в порядке убывания.
+    /// </remarks>
     /// <response code="200">Дневная сводка получена</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
     [HttpGet("daily-summary")]
@@ -202,13 +228,6 @@ public sealed class TimeEntriesController(
         return StatusCode((int) response.StatusCode, response);
     }
 
-    /// <summary>
-    ///     Валидация суммы часов за день
-    /// </summary>
-    /// <param name="date">Дата</param>
-    /// <param name="hours">Количество часов для добавления</param>
-    /// <param name="excludeId">ID записи для исключения из проверки (при обновлении)</param>
-    /// <returns>Результат валидации</returns>
     private async Task<(bool IsValid, string ErrorMessage)>
             ValidateDailyHours(DateTime date,
                     decimal hours,

@@ -5,6 +5,9 @@ namespace TimeTrackingAPI.Common.DTOs;
 /// <summary>
 ///     DTO для создания нового проекта
 /// </summary>
+/// <remarks>
+///     Используется в POST /api/projects для передачи данных нового проекта.
+/// </remarks>
 /// <example>
 ///     {
 ///     "name": "Разработка мобильного приложения",

@@ -19,6 +19,10 @@ public sealed class ProjectsController(
     ///     Получить все проекты
     /// </summary>
     /// <returns>Список всех проектов компании</returns>
+    /// <remarks>
+    ///     Возвращает список всех проектов, включая активные и неактивные.
+    ///     Результаты отсортированы по названию проекта в алфавитном порядке.
+    /// </remarks>
     /// <response code="200">Список проектов успешно получен</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
     [HttpGet]
@@ -43,10 +47,11 @@ public sealed class ProjectsController(
     /// </summary>
     /// <param name="id">Идентификатор проекта</param>
     /// <returns>Найденный проект или сообщение об ошибке</returns>
+    /// <remarks>Выполняет поиск проекта по уникальному идентификатору</remarks>
     /// <response code="200">Проект найден</response>
     /// <response code="404">Проект не найден</response>
     /// <response code="500">Внутренняя ошибка сервера</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ApiResponse<Project>), 200)]
     [ProducesResponseType(typeof(ApiResponse<Project>), 404)]
     [ProducesResponseType(typeof(ApiResponse<Project>), 500)]
@@ -68,6 +73,11 @@ public sealed class ProjectsController(
     /// </summary>
     /// <param name="projectDto">Данные для создания проекта</param>
     /// <returns>Созданный проект</returns>
+    /// <remarks>
+    ///     Проверяет уникальность кода проекта перед созданием.
+    ///     При успешном создании возвращает код 201 и URL для доступа к созданному
+    ///     ресурсу.
+    /// </remarks>
     /// <response code="201">Проект успешно создан</response>
     /// <response code="400">
     ///     Некорректные данные запроса или проект с таким кодом уже
@@ -84,9 +94,6 @@ public sealed class ProjectsController(
         logger.LogInformation(
                 "Получен запрос на создание проекта: {Name}",
                 projectDto.Name);
-
-        // ModelState.IsValid проверка АВТОМАТИЧЕСКАЯ благодаря [ApiController]!
-        // Если данные невалидны, до сюда код не дойдет - автоматически вернется 400
 
         var project = new Project
         {
@@ -113,6 +120,11 @@ public sealed class ProjectsController(
     /// <param name="id">Идентификатор проекта</param>
     /// <param name="projectDto">Обновленные данные проекта</param>
     /// <returns>Результат обновления</returns>
+    /// <remarks>
+    ///     Проверяет существование проекта и уникальность кода (исключая текущий
+    ///     проект).
+    ///     Обновляет все поля проекта: название, код и статус активности.
+    /// </remarks>
     /// <response code="200">Проект успешно обновлен</response>
     /// <response code="400">Некорректные данные запроса</response>
     /// <response code="404">Проект не найден</response>
@@ -149,6 +161,10 @@ public sealed class ProjectsController(
     /// </summary>
     /// <param name="id">Идентификатор проекта</param>
     /// <returns>Результат удаления</returns>
+    /// <remarks>
+    ///     Проверяет отсутствие связанных задач перед удалением.
+    ///     Проект нельзя удалить, если для него существуют задачи.
+    /// </remarks>
     /// <response code="200">Проект успешно удален</response>
     /// <response code="400">Проект нельзя удалить из-за наличия связанных задач</response>
     /// <response code="404">Проект не найден</response>

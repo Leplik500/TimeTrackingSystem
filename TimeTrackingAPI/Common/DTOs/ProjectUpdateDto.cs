@@ -3,8 +3,12 @@ using System.ComponentModel.DataAnnotations;
 namespace TimeTrackingAPI.Common.DTOs;
 
 /// <summary>
-///     DTO для обновления проекта
+///     DTO для обновления существующего проекта
 /// </summary>
+/// <remarks>
+///     Используется в PUT /api/projects/{id} для передачи обновленных данных
+///     проекта.
+/// </remarks>
 /// <example>
 ///     {
 ///     "name": "Разработка веб-приложения",
