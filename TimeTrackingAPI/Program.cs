@@ -151,8 +151,6 @@ try
         Message = "Time Tracking API is running!"
     });
 
-    app.MapGet("/api", () => Results.Redirect("/swagger"));
-
     logger.Info("Time Tracking API configured successfully");
     await app.RunAsync();
 }
