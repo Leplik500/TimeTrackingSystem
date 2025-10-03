@@ -11,6 +11,27 @@
     &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.TimeEntryService.TimeEntryServiceGetTimeEntriesByMonthAsyncTests&lt;/TestId&gt;
     &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.TimeEntryService.TimeEntryServiceCreateTimeEntryAsyncTests&lt;/TestId&gt;
     &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.TimeEntryService.TimeEntryServiceGetDailySummaryAsyncTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.ProjectService.ProjectServiceGetAllProjectsAsyncTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.ProjectService.ProjectServiceGetProjectByIdAsyncTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.ProjectService.ProjectServiceCreateProjectAsyncTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.ProjectService.ProjectServiceUpdateProjectAsyncTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Services.ProjectService.ProjectServiceDeleteProjectAsyncTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TasksController.TasksControllerGetTasksTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TasksController.TasksControllerGetActiveTasksTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TasksController.TasksControllerGetTaskTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TasksController.TasksControllerCreateTaskTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TasksController.TasksControllerUpdateTaskTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TasksController.TasksControllerDeleteTaskTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.ProjectsController.ProjectsControllerGetProjectsTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.ProjectsController.ProjectsControllerGetProjectTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPI.Tests.Controllers.ProjectsControllerCreateProjectTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPI.Tests.Controllers.ProjectsControllerUpdateProjectTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.ProjectsController.ProjectsControllerCreateProjectTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TimeEntriesController.TimeEntriesControllerGetTimeEntriesTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPI.Tests.Controllers.TimeEntriesControllerGetTimeEntriesByDateTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPI.Tests.Controllers.TimeEntriesControllerGetTimeEntriesByMonthTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPI.Tests.Controllers.TimeEntriesControllerCreateTimeEntryTests&lt;/TestId&gt;
+    &lt;TestId&gt;MSTest::DC1B1D93-CC7C-4096-BB87-F412C924D6C4::net8.0::TimeTrackingAPITests.Controllers.TimeEntriesController.TimeEntriesControllerGetDailySummaryTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 
