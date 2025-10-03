@@ -1,5 +1,13 @@
+using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -108,6 +116,13 @@ try
 
         try
         {
+                migrationLogger.LogInformation(
+                                "Проверка подключения к серверу баз данных...");
+
+                await context.Database.EnsureCreatedAsync();
+                migrationLogger.LogInformation(
+                                "База данных готова");
+
             var pendingMigrations = await context.Database
                     .GetPendingMigrationsAsync();
 
@@ -117,26 +132,35 @@ try
             if (migrations.Length != 0)
             {
                 migrationLogger.LogInformation(
-                        "Applying {Count} pending migrations: {Migrations}",
+                                "Применение {Count} ожидающих миграций: {Migrations}",
                         migrations.Length,
                         string.Join(", ", migrations));
 
                 await context.Database.MigrateAsync();
                 migrationLogger.LogInformation(
-                        "Database migrations applied successfully");
+                                "Миграции базы данных успешно применены");
             }
             else
             {
                 migrationLogger.LogInformation(
-                        "No pending migrations found. Database is up to date");
+                                "Ожидающих миграций не найдено. База данных актуальна");
             }
+
+            var canConnect =
+                            await context.Database
+                                            .CanConnectAsync();
+
+            migrationLogger.LogInformation(
+                            "Тест подключения к БД: {CanConnect}",
+                            canConnect);
         }
         catch (Exception ex)
         {
             migrationLogger.LogError(ex,
-                    "Error occurred while applying database migrations");
+                            "Ошибка при работе с базой данных");
 
-            throw;
+            if (!builder.Environment.IsDevelopment())
+                    throw;
         }
     }
 
