@@ -8,9 +8,6 @@
 
         <!-- Генерация XML файла с документацией для Swagger -->
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-        <!--        &lt;!&ndash; Отключаем предупреждения об отсутствующих XML комментариях &ndash;&gt;-->
-        <!--        <NoWarn>$(NoWarn);1591</NoWarn>-->
     </PropertyGroup>
 
     <ItemGroup>

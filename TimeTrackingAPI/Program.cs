@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using TimeTrackingAPI.Data;
 using TimeTrackingAPI.Services;
 using TimeTrackingAPI.Services.Interfaces;
+using TimeTrackingAPI.Swagger;
 
 var logger = LogManager.Setup()
         .LoadConfigurationFromAppSettings()
@@ -81,6 +82,17 @@ try
         }
 
         options.UseInlineDefinitionsForEnums();
+        options
+                .OperationFilter<
+                        TasksControllerSwaggerExamplesFilter>();
+
+        options
+                .OperationFilter<
+                        TimeEntriesControllerSwaggerExamplesFilter>();
+
+        options
+                .OperationFilter<
+                        ProjectsControllerSwaggerExamplesFilter>();
     });
 
     var app = builder.Build();
