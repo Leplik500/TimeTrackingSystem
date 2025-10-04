@@ -1,13 +1,6 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Builder;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -30,7 +23,20 @@ try
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+                    .AddJsonOptions(options =>
+                    {
+                            options.JsonSerializerOptions
+                                                            .ReferenceHandler =
+                                            ReferenceHandler
+                                                            .IgnoreCycles;
+
+                            options.JsonSerializerOptions
+                                                            .DefaultIgnoreCondition =
+                                            JsonIgnoreCondition
+                                                            .WhenWritingNull;
+                    });
+
 
     // Регистрация DbContext
     builder.Services
