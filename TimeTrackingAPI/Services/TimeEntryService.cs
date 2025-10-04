@@ -28,7 +28,6 @@ public sealed class TimeEntryService(
                     "Запрос на получение всех проводок времени");
 
             var timeEntries = await context.TimeEntries
-                    .AsNoTracking()
                     .Include(timeEntry => timeEntry.Task.Project)
                     .OrderByDescending(te => te.Date)
                     .ThenBy(te => te.Id)
@@ -69,7 +68,6 @@ public sealed class TimeEntryService(
 
             var dateOnly = date.Date;
             var timeEntries = await context.TimeEntries
-                    .AsNoTracking()
                     .Include(timeEntry => timeEntry.Task.Project)
                     .Where(te => te.Date.Date == dateOnly)
                     .OrderBy(te => te.Id)
@@ -115,7 +113,6 @@ public sealed class TimeEntryService(
             var endDate = startDate.AddMonths(1);
 
             var timeEntries = await context.TimeEntries
-                    .AsNoTracking()
                     .Include(timeEntry => timeEntry.Task.Project)
                     .Where(te =>
                             te.Date >= startDate &&
@@ -159,11 +156,9 @@ public sealed class TimeEntryService(
                     timeEntry.Date.ToString("yyyy-MM-dd"),
                     timeEntry.TaskId);
 
-            // Добавляем проводку в контекст
             context.TimeEntries.Add(timeEntry);
             await context.SaveChangesAsync();
 
-            // Загружаем связанные данные для ответа
             await context.Entry(timeEntry)
                     .Reference(te => te.Task)
                     .LoadAsync();
@@ -204,7 +199,6 @@ public sealed class TimeEntryService(
                     "Запрос суммарной информации о часах по дням");
 
             var dailySummary = await context.TimeEntries
-                    .AsNoTracking()
                     .GroupBy(te => te.Date.Date)
                     .Select(g => new
                     {

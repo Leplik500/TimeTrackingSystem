@@ -27,7 +27,6 @@ public sealed class ProjectService(
                     "Запрос на получение всех проектов");
 
             var projects = await context.Projects
-                    .AsNoTracking()
                     .OrderBy(p => p.Name)
                     .ToListAsync();
 
@@ -64,7 +63,6 @@ public sealed class ProjectService(
                     id);
 
             var project = await context.Projects
-                    .AsNoTracking()
                     .FirstOrDefaultAsync(p => p.Id == id);
 
             if (project == null)
@@ -81,8 +79,7 @@ public sealed class ProjectService(
                     "Проект с ID {Id} найден: {Name}", id,
                     project.Name);
 
-            return ApiResponse<Project>.Success(
-                    project,
+            return ApiResponse<Project>.Success(project,
                     "Проект успешно получен");
         }
         catch (Exception ex)
@@ -113,7 +110,6 @@ public sealed class ProjectService(
 
             // Проверка на дублирование кода проекта
             var existingProject = await context.Projects
-                    .AsNoTracking()
                     .FirstOrDefaultAsync(p =>
                             p.Code == project.Code);
 
@@ -136,8 +132,7 @@ public sealed class ProjectService(
                     "Проект успешно создан с ID: {Id}",
                     project.Id);
 
-            return ApiResponse<Project>.Success(
-                    project,
+            return ApiResponse<Project>.Success(project,
                     "Проект успешно создан");
         }
         catch (Exception ex)
@@ -165,8 +160,10 @@ public sealed class ProjectService(
             logger.LogInformation(
                     "Обновление проекта с ID: {Id}", id);
 
-            var existingProject =
-                    await context.Projects.FindAsync(id);
+            var existingProject = await context.Projects
+                            .AsTracking()
+                            .FirstOrDefaultAsync(p =>
+                                            p.Id == id);
 
             if (existingProject == null)
             {
@@ -181,7 +178,6 @@ public sealed class ProjectService(
 
             // Проверка на дублирование кода проекта (исключая текущий проект)
             var duplicateProject = await context.Projects
-                    .AsNoTracking()
                     .FirstOrDefaultAsync(p =>
                             p.Code == project.Code &&
                             p.Id != id);
@@ -237,6 +233,7 @@ public sealed class ProjectService(
                     id);
 
             var project = await context.Projects
+                            .AsTracking()
                     .Include(p => p.Tasks)
                     .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -252,7 +249,7 @@ public sealed class ProjectService(
             }
 
             // Проверка на наличие связанных задач
-            if (project.Tasks.Any())
+            if (project.Tasks.Count != 0)
             {
                 logger.LogWarning(
                         "Нельзя удалить проект с ID {Id} - есть связанные задачи",
@@ -269,8 +266,7 @@ public sealed class ProjectService(
             logger.LogInformation(
                     "Проект с ID {Id} успешно удален", id);
 
-            return ApiResponse<bool>.Success(
-                    true,
+            return ApiResponse<bool>.Success(true,
                     "Проект успешно удален");
         }
         catch (Exception ex)

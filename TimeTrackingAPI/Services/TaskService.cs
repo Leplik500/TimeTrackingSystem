@@ -27,7 +27,6 @@ public sealed class TaskService(
                     "Запрос на получение всех рабочих задач");
 
             var tasks = await context.WorkTasks
-                    .AsNoTracking()
                     .Include(t => t.Project)
                     .OrderBy(t => t.Name)
                     .ToListAsync();
@@ -57,23 +56,24 @@ public sealed class TaskService(
         /// <param name="id">Идентификатор задачи</param>
         /// <returns>Ответ API с найденной задачей</returns>
         public async Task<ApiResponse<WorkTask>>
-            GetTaskByIdAsync(int id)
+                        GetTaskByIdAsync(
+                                        int id)
     {
         try
         {
             logger.LogInformation(
-                    "Запрос на получение задачи с ID: {Id}",
-                    id);
+                            "Запрос на получение задачи с ID: {Id}",
+                            id);
 
             var task = await context.WorkTasks
-                    .AsNoTracking()
                     .Include(t => t.Project)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
             {
-                logger.LogWarning(
-                        "Задача с ID {Id} не найдена", id);
+                    logger.LogWarning(
+                                    "Задача с ID {Id} не найдена",
+                                    id);
 
                 return ApiResponse<WorkTask>.Error(
                         ApiStatusCode.NotFound,
@@ -84,15 +84,14 @@ public sealed class TaskService(
                     "Задача с ID {Id} найдена: {Name}", id,
                     task.Name);
 
-            return ApiResponse<WorkTask>.Success(
-                    task,
+            return ApiResponse<WorkTask>.Success(task,
                     "Задача успешно получена");
         }
         catch (Exception ex)
         {
             logger.LogError(ex,
-                    "Ошибка при получении задачи с ID {Id}",
-                    id);
+                            "Ошибка при получении задачи с ID {Id}",
+                            id);
 
             return ApiResponse<WorkTask>.Error(
                     ApiStatusCode.InternalServerError,
@@ -114,9 +113,7 @@ public sealed class TaskService(
                     "Создание новой задачи: {Name} для проекта {ProjectId}",
                     task.Name, task.ProjectId);
 
-            // Проверка существования проекта
             var projectExists = await context.Projects
-                    .AsNoTracking()
                     .AnyAsync(p => p.Id == task.ProjectId);
 
             if (!projectExists)
@@ -130,9 +127,7 @@ public sealed class TaskService(
                         $"Проект с ID {task.ProjectId} не существует");
             }
 
-            // Проверка на дублирование названия задачи в рамках проекта
             var existingTask = await context.WorkTasks
-                    .AsNoTracking()
                     .FirstOrDefaultAsync(t =>
                             t.Name == task.Name &&
                             t.ProjectId == task.ProjectId);
@@ -161,14 +156,13 @@ public sealed class TaskService(
                     "Задача успешно создана с ID: {Id}",
                     task.Id);
 
-            return ApiResponse<WorkTask>.Success(
-                    task,
+            return ApiResponse<WorkTask>.Success(task,
                     "Задача успешно создана");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex,
-                    "Ошибка при создании задачи");
+                logger.LogError(ex,
+                                "Ошибка при создании задачи");
 
             return ApiResponse<WorkTask>.Error(
                     ApiStatusCode.InternalServerError,
@@ -188,10 +182,12 @@ public sealed class TaskService(
     {
         try
         {
-            logger.LogInformation(
-                    "Обновление задачи с ID: {Id}", id);
+                logger.LogInformation(
+                                "Обновление задачи с ID: {Id}",
+                                id);
 
             var existingTask = await context.WorkTasks
+                            .AsTracking()
                     .Include(t => t.Project)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
@@ -206,9 +202,7 @@ public sealed class TaskService(
                         $"Задача с ID {id} не найдена");
             }
 
-            // Проверка существования проекта
             var projectExists = await context.Projects
-                    .AsNoTracking()
                     .AnyAsync(p => p.Id == task.ProjectId);
 
             if (!projectExists)
@@ -224,7 +218,6 @@ public sealed class TaskService(
 
             // Проверка на дублирование названия задачи в рамках проекта (исключая текущую)
             var duplicateTask = await context.WorkTasks
-                    .AsNoTracking()
                     .FirstOrDefaultAsync(t =>
                             t.Name == task.Name &&
                             t.ProjectId == task.ProjectId &&
@@ -241,7 +234,6 @@ public sealed class TaskService(
                         $"Задача с названием '{task.Name}' уже существует в данном проекте");
             }
 
-            // Обновление всех полей
             existingTask.Name = task.Name;
             existingTask.ProjectId = task.ProjectId;
             existingTask.IsActive = task.IsActive;
@@ -254,8 +246,8 @@ public sealed class TaskService(
                     .LoadAsync();
 
             logger.LogInformation(
-                    "Задача с ID {Id} успешно обновлена",
-                    id);
+                            "Задача с ID {Id} успешно обновлена",
+                            id);
 
             return ApiResponse<WorkTask>.Success(
                     existingTask,
@@ -279,14 +271,16 @@ public sealed class TaskService(
         /// <param name="id">Идентификатор задачи</param>
         /// <returns>Ответ API с результатом удаления</returns>
         public async Task<ApiResponse<bool>> DeleteTaskAsync(
-            int id)
+                        int id)
     {
         try
         {
-            logger.LogInformation(
-                    "Удаление задачи с ID: {Id}", id);
+                logger.LogInformation(
+                                "Удаление задачи с ID: {Id}",
+                                id);
 
             var task = await context.WorkTasks
+                            .AsTracking()
                     .Include(t => t.TimeEntries)
                     .FirstOrDefaultAsync(t => t.Id == id);
 
@@ -302,7 +296,7 @@ public sealed class TaskService(
             }
 
             // Проверка на наличие связанных записей времени
-            if (task.TimeEntries.Any())
+            if (task.TimeEntries.Count != 0)
             {
                 logger.LogWarning(
                         "Нельзя удалить задачу с ID {Id} - есть связанные записи времени",
@@ -319,15 +313,14 @@ public sealed class TaskService(
             logger.LogInformation(
                     "Задача с ID {Id} успешно удалена", id);
 
-            return ApiResponse<bool>.Success(
-                    true,
+            return ApiResponse<bool>.Success(true,
                     "Задача успешно удалена");
         }
         catch (Exception ex)
         {
             logger.LogError(ex,
-                    "Ошибка при удалении задачи с ID {Id}",
-                    id);
+                            "Ошибка при удалении задачи с ID {Id}",
+                            id);
 
             return ApiResponse<bool>.Error(
                     ApiStatusCode.InternalServerError,
@@ -347,8 +340,8 @@ public sealed class TaskService(
             logger.LogInformation(
                     "Запрос на получение только активных рабочих задач");
 
+            // Убираем AsNoTracking() - он уже установлен глобально
             var activeTasks = await context.WorkTasks
-                    .AsNoTracking()
                     .Include(t => t.Project)
                     .Where(task => task.IsActive == true)
                     .OrderBy(t => t.Name)
